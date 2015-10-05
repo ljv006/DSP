@@ -1,0 +1,121 @@
+/*
+ *  Copyright 2010 by Texas Instruments Incorporated.
+ *  All rights reserved. Property of Texas Instruments Incorporated.
+ *  Restricted rights to use, duplicate or disclose this code are
+ *  granted through contract.
+ *
+ */
+/*
+ *  ======== hello.tcf ========
+ *  Configuration script used to generate the example's configuration files
+ */
+
+utils.loadPlatform("ti.platforms.ezdsp5505");
+
+bios.enableRealTimeAnalysis(prog);
+bios.enableMemoryHeaps(prog);
+bios.enableRtdx(prog);
+bios.enableTskManager(prog);
+
+/*
+ * Enable heaps in DARAM and define label SEG0 for heap usage.
+ */
+
+bios.DARAM.createHeap      = true;
+bios.DARAM.enableHeapLabel = true;
+bios.DARAM["heapLabel"]    = prog.extern("SEG0");
+bios.DARAM.heapSize        = 0x500;
+bios.MEM.BIOSOBJSEG = prog.get("DARAM");
+bios.MEM.MALLOCSEG = prog.get("DARAM");
+
+
+/*
+ *  Define the GBL memory model 
+ */
+
+bios.GBL.MEMORYMODEL = "LARGE";
+
+/*
+ * Create and initialize a LOG object
+ */
+
+var trace;
+trace         = bios.LOG.create("trace");
+trace.bufLen  = 1024;
+trace.logType = "circular";
+
+/*
+ * Set the buffer length of LOG_system buffer
+ */
+
+bios.LOG_system.bufLen = 512;
+
+bios.GBL.CLKIN = 60000;
+bios.GBL.CLKOUT = 60.0000;
+bios.PRD.create("PRD0");
+bios.PRD.instance("PRD0").order = 1;
+bios.PRD.instance("PRD0").period = 1000;
+bios.PRD.instance("PRD0").fxn = prog.extern("toogleLED");
+bios.PRD.instance("PRD0").fxn = prog.extern("togleLED");
+bios.PRD.instance("PRD0").fxn = prog.extern("toggleLED");
+bios.PRD.create("PRD1");
+bios.PRD.instance("PRD1").order = 2;
+bios.PRD.create("PRD2");
+bios.PRD.instance("PRD2").order = 3;
+bios.PRD.instance("PRD1").period = 1000;
+bios.PRD.instance("PRD1").fxn = prog.extern("toggleuled");
+bios.PRD.instance("PRD2").period = 1000;
+bios.PRD.instance("PRD2").fxn = prog.extern("lcdscreen");
+bios.PRD.create("PRD3");
+bios.PRD.instance("PRD3").order = 4;
+bios.PRD.instance("PRD3").period = 20000;
+bios.PRD.instance("PRD3").fxn = prog.extern("alarm");
+bios.PRD.instance("PRD3").period = 2000;
+bios.PRD.instance("PRD3").period = 30000;
+bios.PRD.instance("PRD3").destroy();
+bios.PRD.instance("PRD0").period = 500;
+bios.PRD.instance("PRD2").mode = "continuous";
+bios.PRD.instance("PRD2").period = 30000;
+bios.PRD.instance("PRD2").period = 1000;
+bios.PRD.instance("PRD2").mode = "one-shot";
+bios.PRD.instance("PRD2").mode = "continuous";
+bios.PRD.instance("PRD0").period = 1000;
+bios.PRD.instance("PRD2").destroy();
+bios.PRD.create("PRD2");
+bios.PRD.instance("PRD2").order = 3;
+bios.PRD.instance("PRD2").period = 10000;
+bios.PRD.instance("PRD2").fxn = prog.extern("lcdscreen");
+bios.PRD.instance("PRD2").period = 1000;
+bios.PRD.create("PRD3");
+bios.PRD.instance("PRD3").order = 4;
+bios.PRD.instance("PRD3").period = 500;
+bios.PRD.instance("PRD3").fxn = prog.extern("checkingBut");
+bios.TSK.instance("TSK_idle").order = 1;
+bios.TSK.create("TSK0");
+bios.TSK.instance("TSK0").order = 2;
+bios.TSK.create("TSK1");
+bios.TSK.instance("TSK1").order = 3;
+bios.PRD.instance("PRD3").order = 3;
+bios.PRD.instance("PRD2").destroy();
+bios.TSK.instance("TSK1").order = 2;
+bios.TSK.instance("TSK0").destroy();
+bios.TSK.instance("TSK1").destroy();
+bios.PRD.instance("PRD3").order = 2;
+bios.PRD.instance("PRD1").destroy();
+bios.PRD.instance("PRD3").order = 1;
+bios.PRD.instance("PRD0").destroy();
+bios.PRD.instance("PRD3").destroy();
+bios.PRD.create("checkingButton");
+bios.PRD.instance("checkingButton").order = 3;
+bios.PRD.instance("checkingButton").fxn = prog.extern("checkingBut");
+bios.PRD.instance("checkingButton").period = 500;
+bios.PRD.instance("checkingButton").period = 1000;
+bios.GBL.CLKIN = 100000;
+bios.GBL.CLKOUT = 100.0000;
+bios.PRD.instance("checkingButton").period = 250;
+bios.PRD.instance("checkingButton").period = 1000;
+// !GRAPHICAL_CONFIG_TOOL_SCRIPT_INSERT_POINT!
+
+if (config.hasReportedError == false) {
+    prog.gen();
+}
